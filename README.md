@@ -42,3 +42,32 @@ Then try the activate command again.
 | Save deps | `pip freeze > requirements.txt` |
 | Install deps | `pip install -r requirements.txt` |
 | Run FastAPI | `uvicorn app.main:app --reload` |
+
+# Database Architecture
+
+## Big Picture Architecture
+```mermaid
+flowchart TD
+    A[Angular UI] -->|HTTP Request| B(FastAPI Backend)
+    B -->|Database Query| C[(PostgreSQL Database)]
+```
+
+## What Happens Internally?
+```mermaid
+flowchart TD
+    A[FastAPI starts] --> B[SQLAlchemy connects]
+    B --> C[Tables created]
+    C --> D((Server listens for requests))
+```
+
+## Complete Request Flow
+```mermaid
+flowchart TD
+    A([Browser Request]) --> B[FastAPI Route]
+    B --> C[Depends get_db]
+    C --> D[Session Created]
+    D --> E[ORM Query]
+    E --> F[psycopg2 sends SQL]
+    F --> G[(PostgreSQL responds)]
+    G --> H([JSON returned])
+```
